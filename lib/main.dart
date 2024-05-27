@@ -19,9 +19,8 @@ void main() async{
   final todoDatabase = TodoDatabase();
   await todoDatabase.initializeDatabase();
 
-  final brightness = SchedulerBinding.instance.platformDispatcher.platformBrightness;
   final themeController = ThemeController();
-  await themeController.initTheme(brightness);
+  await themeController.initTheme();
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,

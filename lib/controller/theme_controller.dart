@@ -10,18 +10,9 @@ class ThemeController extends ChangeNotifier {
   ThemeData get themeDataStyle => _themeDataStyle;
   bool get isDarkMode => _isDarkMode;
 
-  Future<void> initTheme(Brightness brightness) async {
+  Future<void> initTheme() async {
     _isDarkMode = await SharedPreferencesHelper.getThemeMode();
     _themeDataStyle = _isDarkMode ? ThemeDataStyle.dark : ThemeDataStyle.light;
-
-    if (brightness == Brightness.dark) {
-      _isDarkMode = true;
-      _themeDataStyle = ThemeDataStyle.dark;
-    } else {
-      _isDarkMode = false;
-      _themeDataStyle = ThemeDataStyle.light;
-    }
-    await SharedPreferencesHelper.setThemeMode(_isDarkMode);
     notifyListeners();
   }
 
