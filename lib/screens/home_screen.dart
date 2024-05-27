@@ -77,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Text("Hello",style: KTextStyle.txtMedium18,),
                       Text("You have work today",style: KTextStyle.txtRegular12.copyWith(color: Colors.blueGrey),),
                       SizedBox(height: 20.h,),
-                      categoryTaskGrid(homeModel),
+                      categoryTaskGrid(homeModel,todoControllerWatch),
                       SizedBox(height: 20.h,),
                       Text("Today's Due Task",style: KTextStyle.txtMedium18.copyWith(color: Colors.blueGrey),),
                       SizedBox(height: 20.h,),
@@ -264,7 +264,7 @@ Widget dueTodayTaskList(BuildContext context,List<TodoModel> cardList,TodoContro
   );
 }
 
-Widget categoryTaskGrid(HomeModel? homeModel){
+Widget categoryTaskGrid(HomeModel? homeModel,TodoController todoControllerWatch){
   const colorIconList = [
     {
       "color":0xffFFC96F,
@@ -322,6 +322,7 @@ Widget categoryTaskGrid(HomeModel? homeModel){
       }
       return InkWell(
         onTap: (){
+          todoControllerWatch.setTabIndex(0);
           Navigator.push(context, MaterialPageRoute(builder: ( (context) => TodoListScreen(title: colorIconList[index]["title"].toString(),todoList: todoList ?? [],) )));
         },
         child: Container(
