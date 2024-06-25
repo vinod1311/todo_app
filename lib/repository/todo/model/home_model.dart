@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:todo_app/models/TodoModel.dart';
+import 'package:todo_app/repository/todo/model/todo_model.dart';
 
 HomeModel homeModelFromJson(String str) => HomeModel.fromJson(json.decode(str));
 

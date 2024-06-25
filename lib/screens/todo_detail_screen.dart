@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:todo_app/models/TodoModel.dart';
+import 'package:todo_app/repository/todo/model/todo_model.dart';
 
 import '../utils/common_text_style.dart';
 import '../utils/widgets/custom_appbar.dart';

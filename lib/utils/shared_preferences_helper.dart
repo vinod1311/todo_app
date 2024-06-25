@@ -1,22 +1,24 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_app/utils/preferences.dart';
 
-class SharedPreferencesHelper with Preferences{
+class SharedPreferencesHelper with Preferences {
+  SharedPreferencesHelper._privateConstructor();
+  static final SharedPreferencesHelper _instance = SharedPreferencesHelper._privateConstructor();
 
-  static late final SharedPreferences instance;
+  static SharedPreferences? _preferences;
 
-  /// pref initialize
-  static Future<SharedPreferences> init() async =>
-      instance = await SharedPreferences.getInstance();
+  static Future<SharedPreferencesHelper> getInstance() async {
+    _preferences ??= await SharedPreferences.getInstance();
+    return _instance;
+  }
 
   /// set theme
-  static Future<void> setThemeMode(bool isDarkMode) async {
-    instance.setBool(Preferences.THEME_MODE_KEY, isDarkMode);
+  Future<void> setThemeMode(bool isDarkMode) async {
+    await _preferences?.setBool(Preferences.THEME_MODE_KEY, isDarkMode);
   }
 
   /// get theme
-  static Future<bool> getThemeMode() async {
-    return instance.getBool(Preferences.THEME_MODE_KEY) ?? false;
+  Future<bool> getThemeMode() async {
+    return _preferences?.getBool(Preferences.THEME_MODE_KEY) ?? false;
   }
-
 }

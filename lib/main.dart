@@ -2,25 +2,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
-import 'package:todo_app/controller/theme_controller.dart';
-import 'package:todo_app/controller/todo_controller.dart';
+import 'package:todo_app/bloc/common/common_bloc.dart';
+import 'package:todo_app/bloc/common/common_event.dart';
+import 'package:todo_app/bloc/theme/theme_bloc.dart';
+import 'package:todo_app/bloc/todo/todo_bloc.dart';
+import 'package:todo_app/repository/todo/repository/todo_repository_builder.dart';
 import 'package:todo_app/screens/splash_screen.dart';
 import 'package:todo_app/utils/database/TodoDatabase.dart';
 import 'package:todo_app/utils/shared_preferences_helper.dart';
 import 'package:todo_app/utils/theme_data_style.dart';
 
+import 'bloc/theme/theme_event.dart';
+import 'bloc/theme/theme_state.dart';
+
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
 
-  await SharedPreferencesHelper.init();
+  final sharedPreferencesHelper = await SharedPreferencesHelper.getInstance();
 
   final todoDatabase = TodoDatabase();
   await todoDatabase.initializeDatabase();
-
-  final themeController = ThemeController();
-  await themeController.initTheme();
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -29,10 +32,17 @@ void main() async{
     DeviceOrientation.landscapeRight,
   ]);
   runApp(
-    MultiProvider(
+    MultiBlocProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => themeController),
-        ChangeNotifierProvider(create: (_) => TodoController()),
+        BlocProvider<TodoBloc>(
+          create: (context) =>  TodoBloc(TodoRepositoryBuilder.repository()),
+        ),
+        BlocProvider<ThemeBloc>(
+          create: (context) => ThemeBloc(sharedPreferencesHelper)..add(LoadThemeEvent()),
+        ),
+        BlocProvider<CommonBloc>(
+          create: (context) => CommonBloc(),
+        ),
       ],
       child: const MyApp(),
     ),
@@ -47,11 +57,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
-  ThemeController themeController = ThemeController();
   @override
   Widget build(BuildContext context) {
-    themeController =  Provider.of<ThemeController>(context);
     return ScreenUtilInit(
       designSize: ScreenUtil.defaultSize,
       minTextAdapt: true,
@@ -61,9 +68,7 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         theme: ThemeDataStyle.light,
         darkTheme: ThemeDataStyle.dark,
-        themeMode: themeController.isDarkMode
-            ? ThemeMode.dark
-            : ThemeMode.light,
+        themeMode: ThemeMode.light,
         home: const SplashScreen(),
       ),
     );
